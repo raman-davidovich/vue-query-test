@@ -1,18 +1,4 @@
-<template>
-  <q-banner
-    v-if="isSuccess"
-    class="bg-positive text-white"
-  >
-    <template v-if="orderId">
-      Заказ успешно отправлен! ID: {{ orderId }}
-    </template>
-    <template v-else>
-      {{ message }}
-    </template>
-  </q-banner>
-</template>
-
-<script setup>
+<script setup lang="js">
 defineProps({
   isSuccess: {
     type: Boolean,
@@ -28,3 +14,14 @@ defineProps({
   }
 });
 </script>
+
+<template>
+  <q-banner v-if="isSuccess" class="bg-positive text-white">
+    <template v-if="orderId">
+      Заказ успешно отправлен! ID: {{ orderId }}
+    </template>
+    <template v-else>
+      {{ message }}
+    </template>
+  </q-banner>
+</template>

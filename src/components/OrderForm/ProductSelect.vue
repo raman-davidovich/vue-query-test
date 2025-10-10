@@ -1,18 +1,4 @@
-<template>
-  <q-select
-    :model-value="modelValue"
-    @update:model-value="$emit('update:modelValue', $event)"
-    :options="options"
-    label="Товар *"
-    :loading="loading"
-    :disable="loading || hasError || !categoryId"
-    emit-value
-    map-options
-    :rules="[(value) => !!value || 'Выберите товар']"
-  />
-</template>
-
-<script setup>
+<script setup lang="js">
 defineProps({
   modelValue: {
     type: [String, Number],
@@ -38,3 +24,17 @@ defineProps({
 
 defineEmits(["update:modelValue"]);
 </script>
+
+<template>
+  <q-select
+    :model-value="modelValue"
+    @update:model-value="$emit('update:modelValue', $event)"
+    :options="options"
+    label="Товар *"
+    :loading="loading"
+    :disable="loading || hasError || !categoryId"
+    emit-value
+    map-options
+    :rules="[(value) => !!value || 'Выберите товар']"
+  />
+</template>

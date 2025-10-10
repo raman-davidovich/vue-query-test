@@ -1,3 +1,22 @@
+<script setup lang="js">
+defineProps({
+  isSubmitting: {
+    type: Boolean,
+    default: false,
+  },
+  isFormValid: {
+    type: Boolean,
+    required: true,
+  },
+  isRefreshingCache: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+defineEmits(["reset", "refresh-cache"]);
+</script>
+
 <template>
   <div class="row q-gutter-sm">
     <q-btn
@@ -23,22 +42,3 @@
     />
   </div>
 </template>
-
-<script setup>
-defineProps({
-  isSubmitting: {
-    type: Boolean,
-    default: false,
-  },
-  isFormValid: {
-    type: Boolean,
-    required: true,
-  },
-  isRefreshingCache: {
-    type: Boolean,
-    default: false,
-  },
-});
-
-defineEmits(["reset", "refresh-cache"]);
-</script>

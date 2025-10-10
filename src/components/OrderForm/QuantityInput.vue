@@ -1,3 +1,14 @@
+<script setup lang="js">
+defineProps({
+  modelValue: {
+    type: [String, Number],
+    required: true,
+  },
+});
+
+defineEmits(["update:modelValue"]);
+</script>
+
 <template>
   <q-input
     :model-value="modelValue"
@@ -12,14 +23,3 @@
     ]"
   />
 </template>
-
-<script setup>
-defineProps({
-  modelValue: {
-    type: [String, Number],
-    required: true,
-  },
-});
-
-defineEmits(["update:modelValue"]);
-</script>

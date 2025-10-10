@@ -1,11 +1,4 @@
-<template>
-  <q-inner-loading
-    :showing="showing"
-    :label="label"
-  />
-</template>
-
-<script setup>
+<script setup lang="js">
 defineProps({
   showing: {
     type: Boolean,
@@ -17,3 +10,7 @@ defineProps({
   }
 });
 </script>
+
+<template>
+  <q-inner-loading :showing="showing" :label="label" />
+</template>
