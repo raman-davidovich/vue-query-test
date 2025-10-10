@@ -65,15 +65,15 @@ export const useOrderData = () => {
   const productsOptions = computed(
     () =>
       productsData.value?.map((product) => ({
-        label: `${product.name} - ${product.price} руб.`,
+        label: `${product.name} - ${product.price} rub.`,
         value: product.id,
       })) || []
   );
 
   const isFormValid = computed(
     () =>
-      form.value.categoryId &&
-      form.value.productId &&
+      Boolean(form.value.categoryId) &&
+      Boolean(form.value.productId) &&
       form.value.quantity >= 1 &&
       form.value.quantity <= 10
   );

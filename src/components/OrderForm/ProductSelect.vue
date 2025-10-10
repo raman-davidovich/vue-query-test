@@ -30,11 +30,13 @@ defineEmits(["update:modelValue"]);
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event)"
     :options="options"
-    label="Товар *"
+    label="Product *"
     :loading="loading"
     :disable="loading || hasError || !categoryId"
     emit-value
     map-options
-    :rules="[(value) => !!value || 'Выберите товар']"
+    :rules="[(value) => !!value || 'Choose product']"
+    filled
+    name="product"
   />
 </template>

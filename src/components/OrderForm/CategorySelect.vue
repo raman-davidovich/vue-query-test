@@ -23,14 +23,17 @@ defineEmits(["update:modelValue"]);
 
 <template>
   <q-select
+    id="category-select"
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event)"
     :options="options"
-    label="Категория *"
+    label="Category *"
     :loading="loading"
     :disable="loading || hasError"
     emit-value
     map-options
-    :rules="[(value) => !!value || 'Выберите категорию']"
+    :rules="[(value) => !!value || 'Choose category']"
+    filled
+    name="category-select"
   />
 </template>

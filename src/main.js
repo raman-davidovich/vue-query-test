@@ -17,7 +17,6 @@ import {
   QInnerLoading,
   QSpinner,
 } from "quasar";
-import quasarLang from "quasar/lang/ru";
 import { VueQueryPlugin } from "@tanstack/vue-query";
 import "@quasar/extras/material-icons/material-icons.css";
 import "quasar/src/css/index.sass";
@@ -28,7 +27,6 @@ const app = createApp(App);
 
 app.use(Quasar, {
   plugins: {},
-  lang: quasarLang,
   components: {
     QLayout,
     QHeader,

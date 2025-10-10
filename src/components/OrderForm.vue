@@ -37,7 +37,7 @@ const {
 <template>
   <q-card class="q-pa-md">
     <q-card-section>
-      <div class="text-h5 q-mb-md">Форма заказа товара</div>
+      <div class="text-h5 q-mb-md">Product order form</div>
 
       <LoadingSpinner :showing="categoriesLoading" />
 

@@ -28,22 +28,22 @@ defineEmits(['retry']);
 <template>
   <q-banner v-if="hasError" class="bg-negative text-white q-mb-md">
     <template v-if="productsError">
-      Ошибка загрузки товаров: {{ productsError.message }}
+      Loading products error: {{ productsError.message }}
     </template>
 
     <template v-else-if="categoriesError">
-      Ошибка загрузки категорий: {{ categoriesError.message }}
+      Loading categories error: {{ categoriesError.message }}
     </template>
 
     <template v-else-if="mutationError">
-      Ошибка отправки: {{ mutationError.message }}
+      Sending error: {{ mutationError.message }}
     </template>
 
     <q-btn
       v-if="showRetryButton"
       flat
       color="white"
-      label="Повторить"
+      label="Retry"
       @click="$emit('retry')"
     />
   </q-banner>

@@ -6,7 +6,7 @@ defineProps({
   },
   label: {
     type: String,
-    default: "Загрузка данных..."
+    default: "Loading data..."
   }
 });
 </script>

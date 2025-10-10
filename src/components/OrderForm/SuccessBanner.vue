@@ -10,7 +10,7 @@ defineProps({
   },
   message: {
     type: String,
-    default: "Операция выполнена успешно!"
+    default: "Order successfully sent!"
   }
 });
 </script>
@@ -18,7 +18,7 @@ defineProps({
 <template>
   <q-banner v-if="isSuccess" class="bg-positive text-white">
     <template v-if="orderId">
-      Заказ успешно отправлен! ID: {{ orderId }}
+      Order successfully sent! ID: {{ orderId }}
     </template>
     <template v-else>
       {{ message }}

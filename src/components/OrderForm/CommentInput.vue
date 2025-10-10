@@ -13,8 +13,10 @@ defineEmits(["update:modelValue"]);
   <q-input
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event)"
-    label="Комментарий"
+    label="Comment"
     type="textarea"
     autogrow
+    filled
+    name="comment"
   />
 </template>

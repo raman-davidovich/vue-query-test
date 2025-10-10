@@ -20,21 +20,21 @@ defineEmits(["reset", "refresh-cache"]);
 <template>
   <div class="row q-gutter-sm">
     <q-btn
-      label="Отправить"
+      label="Buy"
       type="submit"
       color="primary"
       :loading="isSubmitting"
       :disable="!isFormValid"
     />
     <q-btn
-      label="Очистить"
+      label="Clean form"
       type="reset"
       color="secondary"
       @click="$emit('reset')"
       :disable="isSubmitting"
     />
     <q-btn
-      label="Обновить кэш"
+      label="Update cache"
       color="warning"
       @click="$emit('refresh-cache')"
       :loading="isRefreshingCache"

@@ -38,7 +38,7 @@ export const useCache = () => {
 
       lastCacheUpdate.value = new Date().toLocaleTimeString();
     } catch (error) {
-      console.error("Ошибка при обновлении кэша:", error);
+      console.error("Updating cache error:", error);
     } finally {
       isRefreshingCache.value = false;
     }

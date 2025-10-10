@@ -6,7 +6,7 @@ import OrderForm from "./components/OrderForm.vue";
   <q-layout view="hHh lpR fFf">
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
-        <q-toolbar-title> Форма заказа с кэшированием </q-toolbar-title>
+        <q-toolbar-title> Order form with caching </q-toolbar-title>
       </q-toolbar>
     </q-header>
 

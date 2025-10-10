@@ -1,41 +1,41 @@
 export const fetchCategories = async () => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  if (Math.random() > 0.8) throw new Error("Ошибка загрузки категорий");
+  if (Math.random() > 0.8) throw new Error("Categories loading error");
 
   return [
-    { id: 1, name: "Электроника" },
-    { id: 2, name: "Одежда" },
-    { id: 3, name: "Книги" },
-    { id: 4, name: "Спорт" },
+    { id: 1, name: "Electronics" },
+    { id: 2, name: "Clothes" },
+    { id: 3, name: "Books" },
+    { id: 4, name: "Sport" },
   ];
 };
 
 export const fetchProducts = async (categoryId) => {
   await new Promise((resolve) => setTimeout(resolve, 800));
 
-  if (Math.random() > 0.9) throw new Error("Ошибка загрузки товаров");
+  if (Math.random() > 0.9) throw new Error("Products loading error");
 
   const productsByCategory = {
     1: [
-      { id: 101, name: "Смартфон", price: 29999 },
-      { id: 102, name: "Ноутбук", price: 59999 },
-      { id: 103, name: "Наушники", price: 4999 },
+      { id: 101, name: "Smartphone", price: 29999 },
+      { id: 102, name: "Laptop", price: 59999 },
+      { id: 103, name: "Headphones", price: 4999 },
     ],
     2: [
-      { id: 201, name: "Футболка", price: 1999 },
-      { id: 202, name: "Джинсы", price: 3999 },
-      { id: 203, name: "Куртка", price: 7999 },
+      { id: 201, name: "T-shirt", price: 1999 },
+      { id: 202, name: "Jeans", price: 3999 },
+      { id: 203, name: "Coat", price: 7999 },
     ],
     3: [
-      { id: 301, name: "Художественная литература", price: 599 },
-      { id: 302, name: "Научная книга", price: 1299 },
-      { id: 303, name: "Детская книга", price: 399 },
+      { id: 301, name: "Fiction", price: 599 },
+      { id: 302, name: "Science book", price: 1299 },
+      { id: 303, name: "Children's book", price: 399 },
     ],
     4: [
-      { id: 401, name: "Мяч футбольный", price: 2999 },
-      { id: 402, name: "Гантели", price: 1999 },
-      { id: 403, name: "Коврик для йоги", price: 1499 },
+      { id: 401, name: "Football ball", price: 2999 },
+      { id: 402, name: "Dumbbells", price: 1999 },
+      { id: 403, name: "Yoga mat", price: 1499 },
     ],
   };
 
@@ -45,8 +45,7 @@ export const fetchProducts = async (categoryId) => {
 export const submitOrder = async (orderData) => {
   await new Promise((resolve) => setTimeout(resolve, 2000));
 
-  if (Math.random() > 0.7)
-    throw new Error("Ошибка сервера при обработке заказа");
+  if (Math.random() > 0.7) throw new Error("Processing order server error");
 
   return {
     id: Math.floor(Math.random() * 1000),

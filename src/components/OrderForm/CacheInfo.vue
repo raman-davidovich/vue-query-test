@@ -26,14 +26,14 @@ defineProps({
 <template>
   <q-card flat class="q-mt-md bg-grey-2">
     <q-card-section>
-      <div class="text-caption">Информация о кэше:</div>
-      <div>Категории: {{ categoriesCount }} записей</div>
-      <div>Товары текущей категории: {{ productsCount }} записей</div>
-      <div>Все товары в кэше: {{ allCachedProducts }} записей</div>
-      <div>Время последнего обновления: {{ lastUpdateTime }}</div>
+      <div class="text-caption">Cache info:</div>
+      <div>Categories: {{ categoriesCount }} records</div>
+      <div>Products in the current category: {{ productsCount }} records</div>
+      <div>All cached products: {{ allCachedProducts }} records</div>
+      <div>Time of the last update: {{ lastUpdateTime }}</div>
       <div v-if="isRefreshing" class="text-warning q-mt-sm">
         <q-spinner size="xs" class="q-mr-xs" />
-        Обновление кэша...
+        Updating cache...
       </div>
     </q-card-section>
   </q-card>
