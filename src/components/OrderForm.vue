@@ -43,8 +43,8 @@ const {
 
       <ErrorBanner
         :has-error="categoriesHasError"
-        :products-error="productsError"
-        :categories-error="categoriesError"
+        :productsError
+        :categoriesError
         :show-retry-button="true"
         @retry="handleRefetchAll"
       />
@@ -83,8 +83,8 @@ const {
 
         <ActionButtons
           :is-submitting="mutation.isPending.value"
-          :is-form-valid="isFormValid"
-          :is-refreshing-cache="isRefreshingCache"
+          :isFormValid
+          :isRefreshingCache
           @reset="resetForm"
           @refresh-cache="handleRefetchAll"
         />
@@ -93,9 +93,9 @@ const {
       <CacheInfo
         :categories-count="categoriesData?.length || 0"
         :products-count="productsData?.length || 0"
-        :all-cached-products="allCachedProducts"
+        :allCachedProducts
         :is-refreshing="isRefreshingCache"
-        :last-update-time="lastCacheUpdate"
+        :lastUpdateTime="lastCacheUpdate"
       />
     </q-card-section>
   </q-card>

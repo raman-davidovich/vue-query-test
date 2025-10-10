@@ -11,7 +11,7 @@ defineEmits(["update:modelValue"]);
 
 <template>
   <q-input
-    :model-value="modelValue"
+    :modelValue
     @update:model-value="$emit('update:modelValue', $event)"
     type="number"
     label="Quantity *"

@@ -27,11 +27,11 @@ defineEmits(["update:modelValue"]);
 
 <template>
   <q-select
-    :model-value="modelValue"
+    :modelValue
     @update:model-value="$emit('update:modelValue', $event)"
-    :options="options"
+    :options
     label="Product *"
-    :loading="loading"
+    :loading
     :disable="loading || hasError || !categoryId"
     emit-value
     map-options

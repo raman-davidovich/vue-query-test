@@ -26,9 +26,9 @@ defineEmits(["update:modelValue"]);
     id="category-select"
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event)"
-    :options="options"
+    :options
     label="Category *"
-    :loading="loading"
+    :loading
     :disable="loading || hasError"
     emit-value
     map-options

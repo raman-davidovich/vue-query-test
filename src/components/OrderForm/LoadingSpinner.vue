@@ -12,5 +12,5 @@ defineProps({
 </script>
 
 <template>
-  <q-inner-loading :showing="showing" :label="label" />
+  <q-inner-loading :showing :label />
 </template>
