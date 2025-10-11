@@ -14,7 +14,7 @@ defineProps({
   },
 });
 
-defineEmits(["reset", "refresh-cache"]);
+const emit =defineEmits(["reset", "refresh-cache"]);
 </script>
 
 <template>
@@ -30,13 +30,13 @@ defineEmits(["reset", "refresh-cache"]);
       label="Clean form"
       type="reset"
       color="secondary"
-      @click="$emit('reset')"
+      @click="emit('reset')"
       :disable="isSubmitting"
     />
     <q-btn
       label="Update cache"
       color="warning"
-      @click="$emit('refresh-cache')"
+      @click="emit('refresh-cache')"
       :loading="isRefreshingCache"
       :disable="isRefreshingCache"
     />

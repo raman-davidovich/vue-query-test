@@ -1,18 +1,14 @@
 <script setup lang="js">
-defineProps({
-  modelValue: {
-    type: String,
-    default: "",
-  },
-});
 
-defineEmits(["update:modelValue"]);
+const model = defineModel({
+  type: String,
+  default: "",
+})
 </script>
 
 <template>
   <q-input
-    :modelValue
-    @update:model-value="$emit('update:modelValue', $event)"
+    v-model="model"
     label="Comment"
     type="textarea"
     autogrow

@@ -1,9 +1,11 @@
 <script setup lang="js">
+
+const model =  defineModel({
+  type: [String, Number],
+  default: null,
+})
+
 defineProps({
-  modelValue: {
-    type: [String, Number],
-    default: null,
-  },
   options: {
     type: Array,
     required: true,
@@ -21,14 +23,11 @@ defineProps({
     default: null,
   },
 });
-
-defineEmits(["update:modelValue"]);
 </script>
 
 <template>
   <q-select
-    :modelValue
-    @update:model-value="$emit('update:modelValue', $event)"
+    v-model="model"
     :options
     label="Product *"
     :loading

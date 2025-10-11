@@ -22,7 +22,7 @@ defineProps({
   }
 });
 
-defineEmits(['retry']);
+const emit = defineEmits(['retry']);
 </script>
 
 <template>
@@ -44,7 +44,7 @@ defineEmits(['retry']);
       flat
       color="white"
       label="Retry"
-      @click="$emit('retry')"
+      @click="emit('retry')"
     />
   </q-banner>
 </template>

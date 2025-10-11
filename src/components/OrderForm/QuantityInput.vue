@@ -1,18 +1,13 @@
 <script setup lang="js">
-defineProps({
-  modelValue: {
-    type: [String, Number],
-    required: true,
-  },
-});
-
-defineEmits(["update:modelValue"]);
+const model = defineModel({
+  type: [String, Number],
+  required: true,
+})
 </script>
 
 <template>
   <q-input
-    :modelValue
-    @update:model-value="$emit('update:modelValue', $event)"
+    v-model="model"
     type="number"
     label="Quantity *"
     min="1"
