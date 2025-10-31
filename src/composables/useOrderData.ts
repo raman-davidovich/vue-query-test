@@ -1,10 +1,51 @@
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, type Ref, type ComputedRef } from "vue";
 import { useQuery, useMutation } from "@tanstack/vue-query";
-import { fetchCategories, fetchProducts, submitOrder } from "./useApi.js";
-import { useCache } from "./useCache.js";
+import {
+  fetchCategories,
+  fetchProducts,
+  submitOrder,
+  type Category,
+  type Product,
+  type OrderData,
+} from "./useApi";
+import { useCache } from "./useCache";
 
-export const useOrderData = () => {
-  const form = ref({
+interface OrderForm {
+  categoryId: number | null;
+  productId: number | null;
+  quantity: number;
+  comment: string;
+}
+
+interface SelectOption {
+  label: string;
+  value: number;
+}
+
+export interface UseOrderDataReturn {
+  form: Ref<OrderForm>;
+  categoriesData: Ref<Category[] | undefined>;
+  categoriesLoading: Ref<boolean>;
+  categoriesHasError: Ref<boolean>;
+  categoriesError: Ref<Error | null>;
+  productsData: Ref<Product[] | undefined>;
+  productsLoading: Ref<boolean>;
+  productsHasError: Ref<boolean>;
+  productsError: Ref<Error | null>;
+  mutation: ReturnType<typeof useMutation<any, Error, OrderData>>;
+  allCachedProducts: Ref<number>;
+  isRefreshingCache: Ref<boolean>;
+  lastCacheUpdate: Ref<string>;
+  categoriesOptions: ComputedRef<SelectOption[]>;
+  productsOptions: ComputedRef<SelectOption[]>;
+  isFormValid: ComputedRef<boolean>;
+  resetForm: () => void;
+  handleSubmit: () => void;
+  handleRefetchAll: () => void;
+}
+
+export const useOrderData = (): UseOrderDataReturn => {
+  const form = ref<OrderForm>({
     categoryId: null,
     productId: null,
     quantity: 1,
@@ -17,11 +58,11 @@ export const useOrderData = () => {
     isError: categoriesHasError,
     error: categoriesError,
     refetch: refetchCategories,
-  } = useQuery({
+  } = useQuery<Category[], Error>({
     queryKey: ["categories"],
     queryFn: fetchCategories,
     staleTime: 5 * 60 * 1000,
-    cacheTime: 10 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 
   const {
@@ -30,7 +71,7 @@ export const useOrderData = () => {
     isError: productsHasError,
     error: productsError,
     refetch: refetchProducts,
-  } = useQuery({
+  } = useQuery<Product[], Error>({
     queryKey: computed(() => ["products", form.value.categoryId]),
     queryFn: () => fetchProducts(form.value.categoryId),
     enabled: computed(
@@ -39,7 +80,7 @@ export const useOrderData = () => {
     staleTime: 2 * 60 * 1000,
   });
 
-  const mutation = useMutation({
+  const mutation = useMutation<any, Error, OrderData>({
     mutationFn: submitOrder,
     onSuccess: () => {
       resetForm();
@@ -54,23 +95,23 @@ export const useOrderData = () => {
     refetchAll,
   } = useCache();
 
-  const categoriesOptions = computed(
+  const categoriesOptions = computed<SelectOption[]>(
     () =>
-      categoriesData.value?.map((category) => ({
+      categoriesData.value?.map((category: Category) => ({
         label: category.name,
         value: category.id,
       })) || []
   );
 
-  const productsOptions = computed(
+  const productsOptions = computed<SelectOption[]>(
     () =>
-      productsData.value?.map((product) => ({
+      productsData.value?.map((product: Product) => ({
         label: `${product.name} - ${product.price} rub.`,
         value: product.id,
       })) || []
   );
 
-  const isFormValid = computed(
+  const isFormValid = computed<boolean>(
     () =>
       Boolean(form.value.categoryId) &&
       Boolean(form.value.productId) &&
@@ -78,7 +119,7 @@ export const useOrderData = () => {
       form.value.quantity <= 10
   );
 
-  const resetForm = () => {
+  const resetForm = (): void => {
     form.value = {
       categoryId: null,
       productId: null,
@@ -87,12 +128,12 @@ export const useOrderData = () => {
     };
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (): void => {
     const selectedProduct = productsData.value?.find(
-      (product) => product.id === form.value.productId
+      (product: Product) => product.id === form.value.productId
     );
-    const selectedCategory = categoriesData.value.find(
-      (category) => category.id === form.value.categoryId
+    const selectedCategory = categoriesData.value?.find(
+      (category: Category) => category.id === form.value.categoryId
     );
 
     const orderData = {
@@ -107,21 +148,21 @@ export const useOrderData = () => {
     mutation.mutate(orderData);
   };
 
-  const handleRefetchAll = () => {
+  const handleRefetchAll = (): void => {
     refetchAll(form.value.categoryId, refetchCategories, refetchProducts);
   };
 
   watch(
     [productsData, categoriesData],
-    () => {
+    (): void => {
       updateCachedProductsCount();
     },
     { deep: true }
   );
 
   watch(
-    () => form.value.categoryId,
-    (newValue, oldValue) => {
+    (): number | null => form.value.categoryId,
+    (newValue: number | null, oldValue: number | null): void => {
       if (newValue !== oldValue) form.value.productId = null;
     }
   );

@@ -1,5 +1,8 @@
-<script setup>
-import { useOrderData } from "../composables/useOrderData.js";
+<script setup lang="ts">
+import {
+  useOrderData,
+  type UseOrderDataReturn,
+} from "../composables/useOrderData";
 import LoadingSpinner from "./OrderForm/LoadingSpinner.vue";
 import ErrorBanner from "./OrderForm/ErrorBanner.vue";
 import SuccessBanner from "./OrderForm/SuccessBanner.vue";
@@ -31,7 +34,7 @@ const {
   resetForm,
   handleSubmit,
   handleRefetchAll,
-} = useOrderData();
+}: UseOrderDataReturn = useOrderData();
 </script>
 
 <template>

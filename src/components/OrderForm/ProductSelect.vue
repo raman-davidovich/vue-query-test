@@ -1,40 +1,51 @@
-<script setup lang="js">
+<script setup lang="ts">
+import { computed, type ComputedRef } from "vue";
 
-const model =  defineModel({
-  type: [String, Number],
+interface SelectOption {
+  label: string;
+  value: number;
+}
+
+interface ProductSelectProps {
+  options: SelectOption[];
+  loading?: boolean;
+  hasError?: boolean;
+  categoryId?: number | null;
+}
+
+type ProductModel = number | null;
+
+const model = defineModel<ProductModel>({
   default: null,
-})
+});
 
-defineProps({
-  options: {
-    type: Array,
-    required: true,
+const props = withDefaults(defineProps<ProductSelectProps>(), {
+  loading: false,
+  hasError: false,
+  categoryId: null,
+});
+
+const validationRules = [
+  (value: ProductModel): boolean | string => {
+    return !!value || "Choose product";
   },
-  loading: {
-    type: Boolean,
-    default: false,
-  },
-  hasError: {
-    type: Boolean,
-    default: false,
-  },
-  categoryId: {
-    type: [String, Number],
-    default: null,
-  },
+];
+
+const isDisabled: ComputedRef<boolean> = computed(() => {
+  return props.loading || props.hasError || !props.categoryId;
 });
 </script>
 
 <template>
   <q-select
     v-model="model"
-    :options
+    :options="props.options"
     label="Product *"
-    :loading
-    :disable="loading || hasError || !categoryId"
+    :loading="props.loading"
+    :disable="isDisabled"
     emit-value
     map-options
-    :rules="[(value) => !!value || 'Choose product']"
+    :rules="validationRules"
     filled
     name="product"
   />

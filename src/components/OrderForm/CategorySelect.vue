@@ -1,37 +1,44 @@
-<script setup lang="js">
+<script setup lang="ts">
+interface SelectOption {
+  label: string;
+  value: number;
+}
 
-const model = defineModel({
-  type: [String, Number],
+interface CategorySelectProps {
+  options: SelectOption[];
+  loading?: boolean;
+  hasError?: boolean;
+}
+
+type CategoryModel = number | null;
+
+const model = defineModel<CategoryModel>({
   default: null,
-})
-
-defineProps({
-  options: {
-    type: Array,
-    required: true,
-  },
-  loading: {
-    type: Boolean,
-    default: false,
-  },
-  hasError: {
-    type: Boolean,
-    default: false,
-  },
 });
+
+const props = withDefaults(defineProps<CategorySelectProps>(), {
+  loading: false,
+  hasError: false,
+});
+
+const validationRules = [
+  (value: CategoryModel): boolean | string => {
+    return !!value || "Choose category";
+  },
+];
 </script>
 
 <template>
   <q-select
     id="category-select"
     v-model="model"
-    :options
+    :options="props.options"
     label="Category *"
-    :loading
-    :disable="loading || hasError"
+    :loading="props.loading"
+    :disable="props.loading || props.hasError"
     emit-value
     map-options
-    :rules="[(value) => !!value || 'Choose category']"
+    :rules="validationRules"
     filled
     name="category-select"
   />

@@ -1,9 +1,5 @@
-<script setup lang="js">
-
-const model = defineModel({
-  type: String,
-  default: "",
-})
+<script setup lang="ts">
+const model = defineModel<string>({ default: "" });
 </script>
 
 <template>

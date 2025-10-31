@@ -1,20 +1,18 @@
-<script setup lang="js">
-defineProps({
-  isSubmitting: {
-    type: Boolean,
-    default: false,
-  },
-  isFormValid: {
-    type: Boolean,
-    required: true,
-  },
-  isRefreshingCache: {
-    type: Boolean,
-    default: false,
-  },
-});
+<script setup lang="ts">
+interface ActionButtonsProps {
+  isSubmitting?: boolean;
+  isFormValid: boolean;
+  isRefreshingCache?: boolean;
+}
 
-const emit =defineEmits(["reset", "refresh-cache"]);
+interface ActionButtonsEmits {
+  reset: [];
+  "refresh-cache": [];
+}
+
+const props = defineProps<ActionButtonsProps>();
+
+const emit = defineEmits<ActionButtonsEmits>();
 </script>
 
 <template>
@@ -23,22 +21,22 @@ const emit =defineEmits(["reset", "refresh-cache"]);
       label="Buy"
       type="submit"
       color="primary"
-      :loading="isSubmitting"
-      :disable="!isFormValid"
+      :loading="props.isSubmitting"
+      :disable="!props.isFormValid"
     />
     <q-btn
       label="Clean form"
       type="reset"
       color="secondary"
       @click="emit('reset')"
-      :disable="isSubmitting"
+      :disable="props.isSubmitting"
     />
     <q-btn
       label="Update cache"
       color="warning"
       @click="emit('refresh-cache')"
-      :loading="isRefreshingCache"
-      :disable="isRefreshingCache"
+      :loading="props.isRefreshingCache"
+      :disable="props.isRefreshingCache"
     />
   </div>
 </template>
