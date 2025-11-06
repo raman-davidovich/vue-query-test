@@ -1,14 +1,15 @@
 import { ref, computed, watch, type Ref, type ComputedRef } from "vue";
 import { useQuery, useMutation } from "@tanstack/vue-query";
-import {
-  fetchCategories,
-  fetchProducts,
-  submitOrder,
-  type Category,
-  type Product,
-  type OrderData,
-} from "./useApi";
+import { fetchCategoriesDto } from "@/api/categories";
+import { fetchProductsDto } from "@/api/products";
+import { submitOrderDto } from "@/api/orders";
 import { useCache } from "./useCache";
+import type { Category } from "@/types/models/category.model";
+import type { Product } from "@/types/models/product.model";
+import type { OrderData, OrderResponse } from "@/types/models/order.model";
+import { mapCategoriesDto } from "@/mappers/category.mapper";
+import { mapProductsDto } from "@/mappers/product.mapper";
+import { mapOrderDataToDto, mapOrderResponseDto } from "@/mappers/order.mapper";
 
 interface OrderForm {
   categoryId: number | null;
@@ -60,7 +61,10 @@ export const useOrderData = (): UseOrderDataReturn => {
     refetch: refetchCategories,
   } = useQuery<Category[], Error>({
     queryKey: ["categories"],
-    queryFn: fetchCategories,
+    queryFn: async (): Promise<Category[]> => {
+      const dto = await fetchCategoriesDto();
+      return mapCategoriesDto(dto);
+    },
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
   });
@@ -73,15 +77,22 @@ export const useOrderData = (): UseOrderDataReturn => {
     refetch: refetchProducts,
   } = useQuery<Product[], Error>({
     queryKey: computed(() => ["products", form.value.categoryId]),
-    queryFn: () => fetchProducts(form.value.categoryId),
+    queryFn: async (): Promise<Product[]> => {
+      const dto = await fetchProductsDto(form.value.categoryId);
+      return mapProductsDto(dto);
+    },
     enabled: computed(
       () => !!form.value.categoryId && form.value.categoryId !== null
     ),
     staleTime: 2 * 60 * 1000,
   });
 
-  const mutation = useMutation<any, Error, OrderData>({
-    mutationFn: submitOrder,
+  const mutation = useMutation<OrderResponse, Error, OrderData>({
+    mutationFn: async (payload: OrderData) => {
+      const dtoPayload = mapOrderDataToDto(payload);
+      const dtoResponse = await submitOrderDto(dtoPayload);
+      return mapOrderResponseDto(dtoResponse);
+    },
     onSuccess: () => {
       resetForm();
     },
