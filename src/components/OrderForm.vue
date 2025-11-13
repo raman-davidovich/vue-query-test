@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import {
-  useOrderData,
-  type UseOrderDataReturn,
-} from "../composables/useOrderData";
+import { useOrderData } from "../composables/useOrderData";
 import LoadingSpinner from "./OrderForm/LoadingSpinner.vue";
 import ErrorBanner from "./OrderForm/ErrorBanner.vue";
 import SuccessBanner from "./OrderForm/SuccessBanner.vue";
@@ -13,6 +10,8 @@ import CommentInput from "./OrderForm/CommentInput.vue";
 import ActionButtons from "./OrderForm/ActionButtons.vue";
 import CacheInfo from "./OrderForm/CacheInfo.vue";
 import SubmissionStatus from "./OrderForm/SubmissionStatus.vue";
+
+const viewModel = useOrderData();
 
 const {
   form,
@@ -32,9 +31,9 @@ const {
   productsOptions,
   isFormValid,
   resetForm,
-  handleSubmit,
-  handleRefetchAll,
-}: UseOrderDataReturn = useOrderData();
+  submit,
+  refetchAllData,
+} = viewModel;
 </script>
 
 <template>
@@ -49,10 +48,10 @@ const {
         :productsError
         :categoriesError
         :show-retry-button="true"
-        @retry="handleRefetchAll"
+        @retry="refetchAllData"
       />
 
-      <q-form @submit="handleSubmit" class="q-gutter-md">
+      <q-form @submit="submit" class="q-gutter-md">
         <CategorySelect
           v-model="form.categoryId"
           :options="categoriesOptions"
@@ -89,7 +88,7 @@ const {
           :isFormValid
           :isRefreshingCache
           @reset="resetForm"
-          @refresh-cache="handleRefetchAll"
+          @refresh-cache="refetchAllData"
         />
       </q-form>
 
