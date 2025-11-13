@@ -30,7 +30,6 @@ const {
   categoriesOptions,
   productsOptions,
   isFormValid,
-  resetForm,
 } = viewModel;
 
 const handleRefetchAllData = () => viewModel.refetchAllData();
@@ -38,6 +37,8 @@ const handleSubmit = async (event?: Event) => {
   event?.preventDefault();
   await viewModel.submit();
 };
+
+const handleResetForm = () => viewModel.resetForm();
 </script>
 
 <template>
@@ -91,7 +92,7 @@ const handleSubmit = async (event?: Event) => {
           :is-submitting="mutation.isPending.value"
           :isFormValid
           :isRefreshingCache
-          @reset="resetForm"
+          @reset="handleResetForm"
           @refresh-cache="handleRefetchAllData"
         />
       </q-form>
