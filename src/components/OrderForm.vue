@@ -31,9 +31,13 @@ const {
   productsOptions,
   isFormValid,
   resetForm,
-  submit,
-  refetchAllData,
 } = viewModel;
+
+const handleRefetchAllData = () => viewModel.refetchAllData();
+const handleSubmit = async (event?: Event) => {
+  event?.preventDefault();
+  await viewModel.submit();
+};
 </script>
 
 <template>
@@ -48,10 +52,10 @@ const {
         :productsError
         :categoriesError
         :show-retry-button="true"
-        @retry="refetchAllData"
+        @retry="handleRefetchAllData"
       />
 
-      <q-form @submit="submit" class="q-gutter-md">
+      <q-form @submit="handleSubmit" class="q-gutter-md">
         <CategorySelect
           v-model="form.categoryId"
           :options="categoriesOptions"
@@ -88,7 +92,7 @@ const {
           :isFormValid
           :isRefreshingCache
           @reset="resetForm"
-          @refresh-cache="refetchAllData"
+          @refresh-cache="handleRefetchAllData"
         />
       </q-form>
 
