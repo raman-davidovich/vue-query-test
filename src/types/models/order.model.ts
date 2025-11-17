@@ -1,8 +1,8 @@
 export interface OrderData {
-  category?: string;
-  product?: string;
-  price?: number;
-  quantity?: number;
+  category: string;
+  product: string;
+  price: number;
+  quantity: number;
   total: number;
   comment: string;
 }
