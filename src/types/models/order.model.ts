@@ -7,6 +7,7 @@ export interface OrderData {
   comment: string;
 }
 
+// frontend model for order response
 export interface OrderResponse extends OrderData {
   id: number;
   createdAt: string;
