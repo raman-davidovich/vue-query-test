@@ -11,8 +11,6 @@ import ActionButtons from "./OrderForm/ActionButtons.vue";
 import CacheInfo from "./OrderForm/CacheInfo.vue";
 import SubmissionStatus from "./OrderForm/SubmissionStatus.vue";
 
-const viewModel = useOrderData();
-
 const {
   form,
   categoriesData,
@@ -30,15 +28,18 @@ const {
   categoriesOptions,
   productsOptions,
   isFormValid,
-} = viewModel;
+  submit,
+  resetForm,
+  refetchAllData,
+} = useOrderData();
 
-const handleRefetchAllData = () => viewModel.refetchAllData();
+const handleRefetchAllData = () => refetchAllData();
 const handleSubmit = async (event?: Event) => {
   event?.preventDefault();
-  await viewModel.submit();
+  await submit();
 };
 
-const handleResetForm = () => viewModel.resetForm();
+const handleResetForm = () => resetForm();
 </script>
 
 <template>
