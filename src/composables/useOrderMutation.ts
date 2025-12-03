@@ -15,15 +15,24 @@ interface UseOrderMutationReturn {
     },
     productsData: any[] | undefined,
     categoriesData: any[] | undefined,
-    onSuccess?: () => void
+    orderId?: number | null
   ) => Promise<void>;
+  resetMutation: () => void;
 }
 
 export const useOrderMutation = (
   onSuccess?: () => void
 ): UseOrderMutationReturn => {
   const orderMutation = useMutation<OrderResponse, Error, OrderData>({
-    mutationFn: async (payload) => ordersRepository.submit(payload),
+    mutationFn: async (payload: OrderData & { id?: number }) => {
+      const { id, ...orderData } = payload;
+
+      if (id) {
+        return ordersRepository.update(id, orderData);
+      }
+
+      return ordersRepository.submit(orderData);
+    },
     onSuccess: onSuccess,
   });
 
@@ -36,7 +45,7 @@ export const useOrderMutation = (
     },
     productsData: any[] | undefined,
     categoriesData: any[] | undefined,
-    onSuccessCallback?: () => void
+    orderId?: number | null
   ): Promise<void> => {
     const selectedProduct = productsData?.find(
       (product) => product.id === form.productId
@@ -46,7 +55,8 @@ export const useOrderMutation = (
       (category) => category.id === form.categoryId
     );
 
-    const payload: OrderData = {
+    const payload: OrderData & { id?: number } = {
+      id: orderId ?? undefined,
       category: selectedCategory?.name || "",
       product: selectedProduct?.name || "",
       price: selectedProduct?.price || 0,
@@ -56,14 +66,15 @@ export const useOrderMutation = (
     };
 
     await orderMutation.mutateAsync(payload);
+  };
 
-    if (onSuccessCallback) {
-      onSuccessCallback();
-    }
+  const resetMutation = (): void => {
+    orderMutation.reset();
   };
 
   return {
     orderMutation,
     submitOrder,
+    resetMutation,
   };
 };

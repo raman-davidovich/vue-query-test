@@ -5,4 +5,8 @@ export interface OrdersRepository {
     orderData: OrderData,
     options?: { isError: boolean }
   ): Promise<OrderResponse>;
+
+  get(id: number): Promise<OrderResponse>;
+
+  update(id: number, orderData: OrderData): Promise<OrderResponse>;
 }

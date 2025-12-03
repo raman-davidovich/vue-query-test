@@ -10,6 +10,7 @@ interface ErrorBannerProps {
   productsError?: ErrorObject | null;
   categoriesError?: ErrorObject | null;
   mutationError?: ErrorObject | null;
+  orderError?: ErrorObject | null;
   showRetryButton?: boolean;
 }
 
@@ -29,7 +30,11 @@ const emit = defineEmits<ErrorBannerEmits>();
 
 <template>
   <q-banner v-if="props.hasError" class="bg-negative text-white q-mb-md">
-    <template v-if="props.productsError">
+    <template v-if="props.orderError">
+      Loading order error: {{ props.orderError?.message }}
+    </template>
+
+    <template v-else-if="props.productsError">
       Loading products error: {{ props.productsError.message }}
     </template>
 

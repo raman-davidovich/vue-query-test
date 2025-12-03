@@ -1,7 +1,7 @@
 import { OrdersRepository } from "../interfaces/orders.repository";
 import { OrdersMapper } from "@/mappers/orders.mapper";
 import type { OrderData, OrderResponse } from "@/types/models/order.model";
-import { submitOrderDto } from "@/api/orders";
+import { submitOrderDto, getOrderDto, updateOrderDto } from "@/api/orders";
 
 export class OrdersRepositoryImpl implements OrdersRepository {
   private mapper: OrdersMapper;
@@ -20,6 +20,26 @@ export class OrdersRepositoryImpl implements OrdersRepository {
 
     const dtoPayload = this.mapper.toDto(orderData);
     const dtoResponse = await submitOrderDto(dtoPayload);
+    return this.mapper.toModel(dtoResponse);
+  }
+
+  async get(id: number): Promise<OrderResponse> {
+    const dtoResponse = await getOrderDto(id);
+    return this.mapper.toModel(dtoResponse);
+  }
+
+  async update(
+    id: number,
+    orderData: OrderData,
+    options?: { isError?: boolean }
+  ): Promise<OrderResponse> {
+    if (options?.isError) {
+      throw new Error("Updating order server error");
+    }
+
+    const dtoPayload = this.mapper.toDto(orderData);
+    const dtoResponse = await updateOrderDto(id, dtoPayload);
+
     return this.mapper.toModel(dtoResponse);
   }
 }

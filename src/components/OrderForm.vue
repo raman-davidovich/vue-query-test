@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { useOrderData } from "../composables/useOrderData";
+import { computed } from "vue";
+import { useOrderFormData } from "../composables/useOrderFormData";
 import LoadingSpinner from "./OrderForm/LoadingSpinner.vue";
 import ErrorBanner from "./OrderForm/ErrorBanner.vue";
 import SuccessBanner from "./OrderForm/SuccessBanner.vue";
@@ -10,6 +11,25 @@ import CommentInput from "./OrderForm/CommentInput.vue";
 import ActionButtons from "./OrderForm/ActionButtons.vue";
 import CacheInfo from "./OrderForm/CacheInfo.vue";
 import SubmissionStatus from "./OrderForm/SubmissionStatus.vue";
+
+interface Props {
+  mode?: "create" | "edit";
+  orderId?: number | null;
+  title?: string;
+  showCacheInfo?: boolean;
+  onSuccess?: () => void;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  mode: "create",
+  orderId: null,
+  title: "Product order form",
+  showCacheInfo: true,
+});
+
+const emit = defineEmits<{
+  success: [];
+}>();
 
 const {
   form,
@@ -31,7 +51,21 @@ const {
   submit,
   resetForm,
   refetchAllData,
-} = useOrderData();
+  orderLoading,
+  orderHasError,
+  orderError,
+  resetMutation,
+} = useOrderFormData({
+  mode: props.mode,
+  orderId: props.orderId,
+  onSuccess: () => {
+    if (props.onSuccess) {
+      props.onSuccess();
+    }
+    emit("success");
+    resetForm();
+  },
+});
 
 const handleRefetchAllData = () => refetchAllData();
 const handleSubmit = async (event?: Event) => {
@@ -39,20 +73,35 @@ const handleSubmit = async (event?: Event) => {
   await submit();
 };
 
-const handleResetForm = () => resetForm();
+const handleResetForm = () => {
+  resetForm();
+  resetMutation();
+};
+
+const isLoading = computed(
+  () => categoriesLoading.value || (props.mode === "edit" && orderLoading.value)
+);
+
+const hasError = computed(
+  () =>
+    categoriesHasError.value || (props.mode === "edit" && orderHasError.value)
+);
 </script>
 
 <template>
   <q-card class="q-pa-md">
     <q-card-section>
-      <div class="text-h5 q-mb-md">Product order form</div>
+      <div class="text-h5 q-mb-md">{{ title }}</div>
 
-      <LoadingSpinner :showing="categoriesLoading" />
+      <LoadingSpinner :showing="isLoading" />
 
       <ErrorBanner
-        :has-error="categoriesHasError"
+        :has-error="hasError"
         :productsError
         :categoriesError
+        :mutationError="
+          mode === 'edit' && orderError ? orderError : mutation.error.value
+        "
         :show-retry-button="true"
         @retry="handleRefetchAllData"
       />
@@ -99,6 +148,7 @@ const handleResetForm = () => resetForm();
       </q-form>
 
       <CacheInfo
+        v-if="showCacheInfo"
         :categories-count="categoriesData?.length || 0"
         :products-count="productsData?.length || 0"
         :allCachedProducts

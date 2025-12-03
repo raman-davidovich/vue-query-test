@@ -1,4 +1,4 @@
-import { ref, computed, watch, type Ref, type ComputedRef } from "vue";
+import { ref, computed, type Ref, type ComputedRef } from "vue";
 
 interface OrderFormState {
   categoryId: number | null;
@@ -11,14 +11,17 @@ interface UseOrderFormReturn {
   form: Ref<OrderFormState>;
   isFormValid: ComputedRef<boolean>;
   resetForm: () => void;
+  initializeForm: (initialData?: Partial<OrderFormState>) => void;
 }
 
-export const useOrderForm = (): UseOrderFormReturn => {
+export const useOrderForm = (
+  initialData?: Partial<OrderFormState>
+): UseOrderFormReturn => {
   const form = ref<OrderFormState>({
-    categoryId: null,
-    productId: null,
-    quantity: 1,
-    comment: "",
+    categoryId: initialData?.categoryId ?? null,
+    productId: initialData?.productId ?? null,
+    quantity: initialData?.quantity ?? 1,
+    comment: initialData?.comment ?? "",
   });
 
   const isFormValid = computed(
@@ -38,9 +41,21 @@ export const useOrderForm = (): UseOrderFormReturn => {
     };
   };
 
+  const initializeForm = (initialData?: Partial<OrderFormState>): void => {
+    if (initialData) {
+      form.value = {
+        categoryId: initialData.categoryId ?? null,
+        productId: initialData.productId ?? null,
+        quantity: initialData.quantity ?? 1,
+        comment: initialData.comment ?? "",
+      };
+    }
+  };
+
   return {
     form,
     isFormValid,
     resetForm,
+    initializeForm,
   };
 };
