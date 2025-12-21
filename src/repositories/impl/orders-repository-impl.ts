@@ -1,7 +1,12 @@
 import { OrdersRepository } from "../interfaces/orders.repository";
 import { OrdersMapper } from "@/mappers/orders.mapper";
 import type { OrderData, OrderResponse } from "@/types/models/order.model";
-import { submitOrderDto, getOrderDto, updateOrderDto } from "@/api/orders";
+import {
+  submitOrderDto,
+  getOrderDto,
+  updateOrderDto,
+  getAllOrdersDto,
+} from "@/api/orders";
 
 export class OrdersRepositoryImpl implements OrdersRepository {
   private mapper: OrdersMapper;
@@ -41,5 +46,10 @@ export class OrdersRepositoryImpl implements OrdersRepository {
     const dtoResponse = await updateOrderDto(id, dtoPayload);
 
     return this.mapper.toModel(dtoResponse);
+  }
+
+  async getAll(): Promise<OrderResponse[]> {
+    const dtoResponse = await getAllOrdersDto();
+    return dtoResponse.map((dto) => this.mapper.toModel(dto));
   }
 }

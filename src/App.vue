@@ -1,17 +1,36 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import OrdersTable from "./components/OrdersTable.vue";
 import OrderCreate from "./components/OrderCreate.vue";
 import OrderEdit from "./components/OrderEdit.vue";
 
-const currentMode = ref<"create" | "edit">("create");
-const orderId = ref<number>(1);
+type ViewMode = "create" | "edit" | "list";
 
-const switchToEdit = () => {
-  currentMode.value = "edit";
+const currentView = ref<ViewMode>("list");
+const selectedOrderId = ref<number | null>(null);
+
+const ordersTableRef = ref<{ refetchOrders: () => Promise<void> } | null>(null);
+
+const handleSelectOrder = (orderId: number) => {
+  selectedOrderId.value = orderId;
+  currentView.value = "edit";
 };
 
-const switchToCreate = () => {
-  currentMode.value = "create";
+const handleCreateOrder = () => {
+  currentView.value = "create";
+};
+
+const handleBackToList = () => {
+  currentView.value = "list";
+  selectedOrderId.value = null;
+
+  setTimeout(() => {
+    ordersTableRef.value?.refetchOrders();
+  }, 100);
+};
+
+const handleOrderSuccess = () => {
+  handleBackToList();
 };
 </script>
 
@@ -22,11 +41,18 @@ const switchToCreate = () => {
         <q-toolbar-title> Order form with caching </q-toolbar-title>
         <q-space />
         <q-btn
+          v-if="currentView !== 'list'"
           flat
-          :label="
-            currentMode === 'create' ? 'Switch to edit' : 'Switch to create'
-          "
-          @click="currentMode === 'create' ? switchToEdit() : switchToCreate()"
+          label="Back to list"
+          icon="arrow_back"
+          @click="handleBackToList"
+        />
+        <q-btn
+          v-if="currentView === 'list'"
+          flat
+          label="Create order"
+          icon="add"
+          @click="handleCreateOrder"
         />
       </q-toolbar>
     </q-header>
@@ -34,9 +60,21 @@ const switchToCreate = () => {
     <q-page-container>
       <q-page class="q-pa-md">
         <div class="row justify-center">
-          <div class="col-12 col-md-8 col-lg-6">
-            <OrderCreate v-if="currentMode === 'create'" />
-            <OrderEdit v-else :order-id="orderId" />
+          <div class="col-12 col-md-10 col-lg-8">
+            <OrdersTable
+              v-if="currentView === 'list'"
+              ref="ordersTableRef"
+              @select-order="handleSelectOrder"
+            />
+            <OrderCreate
+              v-else-if="currentView === 'create'"
+              @success="handleOrderSuccess"
+            />
+            <OrderEdit
+              v-else-if="currentView === 'edit' && selectedOrderId"
+              :order-id="selectedOrderId"
+              @success="handleOrderSuccess"
+            />
           </div>
         </div>
       </q-page>

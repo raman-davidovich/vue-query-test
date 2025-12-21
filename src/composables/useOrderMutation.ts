@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/vue-query";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import type { OrderData, OrderResponse } from "@/types/models/order.model";
 import { ordersRepository } from "@/repositories/index";
 
@@ -23,6 +23,8 @@ interface UseOrderMutationReturn {
 export const useOrderMutation = (
   onSuccess?: () => void
 ): UseOrderMutationReturn => {
+  const queryClient = useQueryClient();
+
   const orderMutation = useMutation<OrderResponse, Error, OrderData>({
     mutationFn: async (payload: OrderData & { id?: number }) => {
       const { id, ...orderData } = payload;
@@ -33,7 +35,13 @@ export const useOrderMutation = (
 
       return ordersRepository.submit(orderData);
     },
-    onSuccess: onSuccess,
+    onSuccess: async () => {
+      await queryClient.refetchQueries({ queryKey: ["orders"] });
+
+      if (onSuccess) {
+        onSuccess();
+      }
+    },
   });
 
   const submitOrder = async (

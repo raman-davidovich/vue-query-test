@@ -1,4 +1,4 @@
-import { watch, computed } from "vue";
+import { watch, computed, ref } from "vue";
 import { useCategories } from "./useCategories";
 import { useProducts } from "./useProducts";
 import { useOrderForm } from "./useOrderForm";
@@ -21,15 +21,17 @@ interface UseOrderFormDataProps {
 export const useOrderFormData = (props: UseOrderFormDataProps = {}) => {
   const { mode = "create", orderId = null, initialFormData, onSuccess } = props;
 
-  const { form, isFormValid, resetForm, initializeForm } =
-    useOrderForm(initialFormData);
+  const { form, isFormValid, resetForm } = useOrderForm(initialFormData);
+
+  const isFormInitialized = ref(false);
 
   const categories = useCategories();
   const categoryIdRef = computed(() => form.value.categoryId);
   const products = useProducts(categoryIdRef);
   const cache = useCache();
 
-  const order = useOrder(mode === "edit" ? orderId : null);
+  const currentOrderId = computed(() => (mode === "edit" ? orderId : null));
+  const order = useOrder(currentOrderId);
 
   const orderMutation = useOrderMutation(() => {
     if (onSuccess) {
@@ -55,41 +57,167 @@ export const useOrderFormData = (props: UseOrderFormDataProps = {}) => {
   );
 
   watch(
-    [
-      () => order.orderData.value,
-      categories.categoriesData,
-      products.productsData,
-    ],
-    ([orderData, categoriesData, productsData]) => {
+    [() => order.orderData.value, categories.categoriesData, () => orderId],
+    ([orderData, categoriesData, currentOrderId]) => {
       if (
         orderData &&
         mode === "edit" &&
         categoriesData &&
-        categoriesData.length > 0
+        categoriesData.length > 0 &&
+        orderData.id === currentOrderId
       ) {
-        const category = categoriesData.find(
-          (category) => category.name === orderData.category
-        );
+        if (isFormInitialized.value && form.value.categoryId) {
+          const normalizedOrderCategory = orderData.category
+            ?.trim()
+            .toLocaleLowerCase();
+          const category = categoriesData.find(
+            (category) =>
+              category.name.trim().toLowerCase() === normalizedOrderCategory
+          );
 
-        if (category) {
-          if (productsData && productsData.length > 0) {
-            const product = productsData.find(
-              (product) => product.name === orderData.product
-            );
+          if (category && form.value.categoryId !== category.id) {
+            isFormInitialized.value = false;
+          }
+        }
 
-            if (product) {
-              initializeForm({
-                categoryId: category.id,
-                productId: product.id,
-                quantity: orderData.quantity,
-                comment: orderData.comment,
-              });
-            }
+        if (!isFormInitialized.value) {
+          const normalizedOrderCategory = orderData.category
+            ?.trim()
+            .toLowerCase();
+          const category = categoriesData.find(
+            (category) =>
+              category.name.trim().toLowerCase() === normalizedOrderCategory
+          );
+
+          if (category) {
+            form.value.categoryId = category.id;
+            form.value.quantity = orderData.quantity;
+            form.value.comment = orderData.comment;
+            isFormInitialized.value = true;
           }
         }
       }
     },
     { immediate: true }
+  );
+
+  watch(
+    [
+      () => order.orderData.value,
+      () => form.value.categoryId,
+      products.productsData,
+      () => orderId,
+      products.productsLoading,
+    ],
+    ([
+      orderData,
+      categoryId,
+      productsData,
+      currentOrderId,
+      productsLoading,
+    ]) => {
+      if (
+        orderData &&
+        mode === "edit" &&
+        categoryId &&
+        productsData &&
+        productsData.length > 0 &&
+        !productsLoading &&
+        isFormInitialized.value &&
+        orderData.id === currentOrderId
+      ) {
+        const normalizedOrderProduct = orderData.product?.trim().toLowerCase();
+        const product = productsData.find(
+          (product) =>
+            product.name.trim().toLowerCase() === normalizedOrderProduct
+        );
+
+        if (product) {
+          if (form.value.productId !== product.id) {
+            form.value.productId = product.id;
+          }
+        } else {
+          form.value.productId = null;
+        }
+      } else if (
+        orderData &&
+        orderData.id !== currentOrderId &&
+        mode === "edit"
+      ) {
+        form.value.productId = null;
+      }
+    },
+    { immediate: true }
+  );
+
+  watch(
+    () => orderId,
+    (newOrderId, oldOrderId) => {
+      if (mode === "edit") {
+        if (newOrderId !== oldOrderId) {
+          isFormInitialized.value = false;
+          resetForm();
+          form.value.productId = null;
+          form.value.categoryId = null;
+          form.value.quantity = 1;
+          form.value.comment = "";
+        }
+      }
+    },
+    { immediate: false }
+  );
+
+  watch(
+    [
+      () => order.orderData.value,
+      () => form.value.categoryId,
+      products.productsData,
+      products.productsLoading,
+      () => orderId,
+    ],
+    ([
+      orderData,
+      categoryId,
+      productsData,
+      productsLoading,
+      currentOrderId,
+    ]) => {
+      if (
+        orderData &&
+        mode === "edit" &&
+        categoryId &&
+        productsData &&
+        productsData.length > 0 &&
+        !productsLoading &&
+        isFormInitialized.value &&
+        !form.value.productId &&
+        orderData.id === currentOrderId
+      ) {
+        const normalizedOrderProduct = orderData.product?.trim().toLowerCase();
+        const product = productsData.find(
+          (product) =>
+            product.name.trim().toLowerCase() === normalizedOrderProduct
+        );
+
+        if (product) {
+          form.value.productId = product.id;
+        }
+      }
+    },
+    { immediate: true }
+  );
+
+  watch(
+    () => order.orderData.value?.id,
+    (newOrderId, oldOrderId) => {
+      if (
+        mode === "edit" &&
+        newOrderId !== oldOrderId &&
+        oldOrderId !== undefined
+      ) {
+        isFormInitialized.value = false;
+      }
+    }
   );
 
   cache.updateCachedProductsCount();

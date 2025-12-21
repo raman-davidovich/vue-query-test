@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import OrderForm from "./OrderForm.vue";
 
+const emit = defineEmits<{
+  success: [];
+}>();
+
 const handleSuccess = () => {
   console.log("Order created successfully");
-  // think about SuccessBanner showing
+  emit("success");
+  // TODO: think about SuccessBanner showing
 };
 </script>
 

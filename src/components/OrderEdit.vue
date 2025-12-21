@@ -7,14 +7,20 @@ interface Props {
 
 const props = defineProps<Props>();
 
+const emit = defineEmits<{
+  success: [];
+}>();
+
 const handleSuccess = () => {
   console.log("Order updated successfully");
+  emit("success");
   // TODO: Show success banner
 };
 </script>
 
 <template>
   <OrderForm
+    :key="`order-edit-${props.orderId}`"
     mode="edit"
     :order-id="props.orderId"
     title="Edit order"

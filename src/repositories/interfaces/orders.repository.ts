@@ -9,4 +9,6 @@ export interface OrdersRepository {
   get(id: number): Promise<OrderResponse>;
 
   update(id: number, orderData: OrderData): Promise<OrderResponse>;
+
+  getAll(): Promise<OrderResponse[]>;
 }

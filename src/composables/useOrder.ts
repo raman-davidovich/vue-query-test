@@ -1,4 +1,4 @@
-import { computed } from "vue";
+import { computed, Ref, ComputedRef } from "vue";
 import { useQuery } from "@tanstack/vue-query";
 import type { OrderResponse } from "@/types/models/order.model";
 import { ordersRepository } from "@/repositories/index";
@@ -11,19 +11,32 @@ interface UseOrderReturn {
   refetchOrder: ReturnType<typeof useQuery<OrderResponse, Error>>["refetch"];
 }
 export const useOrder = (
-  orderId: number | null | undefined
+  orderId:
+    | Ref<number | null | undefined>
+    | ComputedRef<number | null | undefined>
+    | number
+    | undefined
 ): UseOrderReturn => {
+  const orderIdRef =
+    typeof orderId === "object" && "value" in orderId
+      ? computed(() => orderId.value)
+      : computed(() => orderId);
+
   const orderQuery = useQuery<OrderResponse, Error>({
-    queryKey: computed(() => ["order", orderId]),
+    queryKey: computed(() => ["order", orderIdRef.value]),
     queryFn: async () => {
-      if (!orderId) {
+      const id = orderIdRef.value;
+      if (!id) {
         throw new Error("Order Id is required");
       }
 
-      return ordersRepository.get(orderId);
+      return ordersRepository.get(id);
     },
-    enabled: computed(() => !!orderId),
-    staleTime: 5 * 60 * 1000,
+    enabled: computed(() => !!orderIdRef.value),
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: false,
   });
 
   return {

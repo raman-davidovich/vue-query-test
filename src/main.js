@@ -16,6 +16,7 @@ import {
   QBtn,
   QInnerLoading,
   QSpinner,
+  QTable,
 } from "quasar";
 import { VueQueryPlugin } from "@tanstack/vue-query";
 import "@quasar/extras/material-icons/material-icons.css";
@@ -43,6 +44,7 @@ app.use(Quasar, {
     QBtn,
     QInnerLoading,
     QSpinner,
+    QTable,
   },
 });
 
