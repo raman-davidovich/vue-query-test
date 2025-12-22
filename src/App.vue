@@ -65,7 +65,14 @@ const handleOrderSuccess = () => {
               v-if="currentView === 'list'"
               ref="ordersTableRef"
               @select-order="handleSelectOrder"
-            />
+            >
+              <template #title>
+                <div class="row items-center q-gutter-sm">
+                  <q-icon name="list" size="md" />
+                  <span>Orders list</span>
+                </div>
+              </template>
+            </OrdersTable>
             <OrderCreate
               v-else-if="currentView === 'create'"
               @success="handleOrderSuccess"

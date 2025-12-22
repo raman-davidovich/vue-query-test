@@ -13,10 +13,7 @@ const handleSuccess = () => {
 </script>
 
 <template>
-  <OrderForm
-    mode="create"
-    title="Create new order"
-    :show-cache-info="true"
-    @success="handleSuccess"
-  />
+  <OrderForm mode="create" :show-cache-info="true" @success="handleSuccess">
+    <template #title> Create new order </template>
+  </OrderForm>
 </template>

@@ -15,7 +15,6 @@ import SubmissionStatus from "./OrderForm/SubmissionStatus.vue";
 interface Props {
   mode?: "create" | "edit";
   orderId?: number | null;
-  title?: string;
   showCacheInfo?: boolean;
   onSuccess?: () => void;
 }
@@ -23,7 +22,6 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   mode: "create",
   orderId: null,
-  title: "Product order form",
   showCacheInfo: true,
 });
 
@@ -91,7 +89,9 @@ const hasError = computed(
 <template>
   <q-card class="q-pa-md">
     <q-card-section>
-      <div class="text-h5 q-mb-md">{{ title }}</div>
+      <div class="text-h5 q-mb-md">
+        <slot name="title"></slot>
+      </div>
 
       <LoadingSpinner :showing="isLoading" />
 

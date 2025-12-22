@@ -102,7 +102,9 @@ defineExpose({
 <template>
   <q-card class="q-pa-md">
     <q-card-section>
-      <div class="text-h5 q-mb-md">Orders list</div>
+      <div class="text-h5 q-mb-md">
+        <slot name="title"></slot>
+      </div>
 
       <LoadingSpinner :showing="ordersLoading" />
 
